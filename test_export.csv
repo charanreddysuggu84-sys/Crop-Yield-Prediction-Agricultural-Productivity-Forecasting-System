@@ -1,0 +1,2 @@
+id,crop_type,region,predicted_yield_kg_ha,soil_suitability_score,model_version,created_at
+3,wheat,"Krishna, Andhra Pradesh",6078.8,1.0,yield_model_v1,2026-08-02 18:06:09.262873+05:30
