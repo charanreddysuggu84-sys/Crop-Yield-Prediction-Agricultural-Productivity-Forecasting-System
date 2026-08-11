@@ -1,4 +1,4 @@
-// File: C:\Users\chara\Title-YieldSense-AI-Crop-Yield-Prediction-Agricultural-Productivity-Forecasting-System\frontend\app\dashboard\page.tsx
+// File: C:\Users\chara\New folder\Crop-Yield-Prediction-Agricultural-Productivity-Forecasting-System\frontend\app\dashboard\page.tsx
 import * as entry from '../../../../app/dashboard/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
