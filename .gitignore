@@ -18,5 +18,12 @@ node_modules/
 dist/
 build/
 
+# ML Model files
+*.pkl
+*.joblib
+*.h5
+models/*.model
+models/*.bin
+
 # Windows
 Thumbs.db
