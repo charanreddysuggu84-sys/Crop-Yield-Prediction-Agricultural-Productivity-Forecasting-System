@@ -27,3 +27,10 @@ models/*.bin
 
 # Windows
 Thumbs.db
+
+# Next.js build output
+frontend/.next/
+
+# Debug/test exports
+test_export.csv
+backend/predictions_test.csv
