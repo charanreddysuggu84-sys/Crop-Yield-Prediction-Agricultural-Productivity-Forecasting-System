@@ -56,3 +56,8 @@ docker compose up --build
 
 ## License
 This project is licensed under the MIT License - see [LICENSE](./LICENSE)
+
+A few notes on what I filled in
+Model Performance numbers — pulled directly from your actual train.py run earlier, not placeholders
+Setup instructions — match your real commands (python -m app.ml.train, uvicorn main:app) instead of the generic handout versions
+Docker note — honest, professional framing of the limitation, not hidden or faked
