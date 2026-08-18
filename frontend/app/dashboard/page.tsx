@@ -2,9 +2,31 @@
 
 import { useEffect, useState } from "react";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import {
+  Sprout,
+  CloudSun,
+  Layers,
+  LineChart as LineChartIcon,
+  FileText,
+  Bell,
+  ArrowRight,
+  Download,
+} from "lucide-react";
 import Navbar from "../../components/Navbar";
 import { getDashboardSummary, DashboardSummary } from "../../services/dashboardApi";
 import { downloadPredictionsCsv } from "../../services/reportsApi";
+
+// Quick-action tiles shown at the top of the dashboard.
+// Only "Predict Yield" has a dedicated route today — the rest route to
+// /predict as well until their own pages exist (see README/roadmap).
+const QUICK_ACTIONS = [
+  { label: "Predict Yield", icon: Sprout, href: "/predict" },
+  { label: "Weather", icon: CloudSun, href: "/predict" },
+  { label: "Soil Health", icon: Layers, href: "/predict" },
+  { label: "Market Prices", icon: LineChartIcon, href: "/predict" },
+  { label: "Reports", icon: FileText, href: "/predict" },
+  { label: "Alerts", icon: Bell, href: "/predict" },
+];
 
 export default function DashboardPage() {
   const [data, setData] = useState<DashboardSummary | null>(null);
@@ -37,9 +59,33 @@ export default function DashboardPage() {
         <h1>Farm Dashboard</h1>
         <p className="subtitle">Your yield predictions and performance at a glance.</p>
 
-        <button className="downloadBtn" onClick={handleDownload} disabled={downloading}>
-          {downloading ? "Preparing download..." : "⬇ Download Report (CSV)"}
-        </button>
+        {/* Quick-action grid */}
+        <div className="quickGrid">
+          {QUICK_ACTIONS.map(({ label, icon: Icon, href }) => (
+            <a key={label} href={href} className="quickTile">
+              <span className="quickIcon">
+                <Icon size={22} strokeWidth={2} />
+              </span>
+              <span className="quickLabel">{label}</span>
+            </a>
+          ))}
+        </div>
+
+        {/* Featured promo card */}
+        <a href="/predict" className="promoCard">
+          <div className="promoArt" aria-hidden="true">
+            <Sprout size={48} strokeWidth={1.5} />
+          </div>
+          <div className="promoBody">
+            <p className="promoTitle">Get started with a new prediction</p>
+            <p className="promoText">
+              Enter your field, crop, and season details to generate a fresh yield forecast in seconds.
+            </p>
+            <span className="promoBtn">
+              Start Prediction <ArrowRight size={16} />
+            </span>
+          </div>
+        </a>
 
         {loading && (
           <div className="card skeleton">
@@ -125,23 +171,118 @@ export default function DashboardPage() {
           </>
         )}
 
+        {/* Bottom CTA pills */}
+        <div className="ctaRow">
+          <a href="/predict" className="pillBtn pillBtnPrimary">
+            <Sprout size={18} /> New Prediction
+          </a>
+          <button
+            className="pillBtn pillBtnOutline"
+            onClick={handleDownload}
+            disabled={downloading}
+          >
+            <Download size={18} />
+            {downloading ? "Preparing download..." : "Download Report (CSV)"}
+          </button>
+        </div>
+
         <style jsx>{`
-          .page { max-width: 800px; margin: 0 auto; padding: 40px 24px; }
+          .page { max-width: 800px; margin: 0 auto; padding: 40px 24px 100px; }
           h1 { font-size: 28px; font-weight: 800; color: #14532d; margin-bottom: 4px; }
-          .subtitle { color: #6b7280; margin-bottom: 16px; }
-          .downloadBtn {
-            background: white;
-            color: #15803d;
-            border: 1.5px solid #15803d;
-            padding: 10px 18px;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-bottom: 24px;
+          .subtitle { color: #6b7280; margin-bottom: 24px; }
+
+          /* Quick-action grid */
+          .quickGrid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
           }
-          .downloadBtn:hover { background: #f0fdf4; }
-          .downloadBtn:disabled { opacity: 0.6; cursor: not-allowed; }
+          .quickTile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: var(--color-surface);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--radius-md);
+            padding: 18px 8px;
+            text-decoration: none;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+          }
+          .quickTile:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--color-primary-500);
+          }
+          .quickIcon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--color-primary-100);
+            color: var(--color-primary-700);
+          }
+          .quickLabel {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            text-align: center;
+            line-height: 1.3;
+          }
+
+          /* Featured promo card */
+          .promoCard {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: var(--gradient-primary);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin-bottom: 20px;
+            text-decoration: none;
+            box-shadow: var(--shadow-lg);
+          }
+          .promoArt {
+            flex-shrink: 0;
+            width: 84px;
+            height: 84px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.16);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+          }
+          .promoBody { flex: 1; min-width: 0; }
+          .promoTitle {
+            color: #fff;
+            font-size: 17px;
+            font-weight: 700;
+            margin: 0 0 6px;
+          }
+          .promoText {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 13.5px;
+            line-height: 1.5;
+            margin: 0 0 14px;
+          }
+          .promoBtn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #fff;
+            color: var(--color-primary-700);
+            font-size: 13.5px;
+            font-weight: 700;
+            padding: 8px 16px;
+            border-radius: 999px;
+          }
+
           .card {
             background: white;
             border-radius: 16px;
@@ -171,6 +312,45 @@ export default function DashboardPage() {
           @keyframes shimmer {
             0% { background-position: 200% 0; }
             100% { background-position: -200% 0; }
+          }
+
+          /* Bottom CTA pills */
+          .ctaRow {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 8px;
+          }
+          .pillBtn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 14px 20px;
+            border-radius: 999px;
+            font-size: 14.5px;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+          }
+          .pillBtnPrimary {
+            background: var(--color-primary-500);
+            color: #fff;
+          }
+          .pillBtnPrimary:hover { background: var(--color-primary-700); }
+          .pillBtnOutline {
+            background: #fff;
+            color: var(--color-primary-700);
+            border: 1.5px solid var(--color-primary-500);
+          }
+          .pillBtnOutline:hover { background: var(--color-primary-100); }
+          .pillBtnOutline:disabled { opacity: 0.6; cursor: not-allowed; }
+
+          @media (min-width: 480px) {
+            .quickGrid { grid-template-columns: repeat(6, 1fr); }
+            .ctaRow { flex-direction: row; }
           }
         `}</style>
       </div>
